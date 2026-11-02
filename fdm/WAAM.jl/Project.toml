@@ -13,7 +13,7 @@ Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [weakdeps]
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
-WriteVTK = "512ff8d9-80a6-5770-7bc6-e777d8f6d587"
+WriteVTK = "64499a7a-5c06-52f2-abe2-ccb03c286192"
 
 [extensions]
 WAAMFlowGUIExt = "JSON"

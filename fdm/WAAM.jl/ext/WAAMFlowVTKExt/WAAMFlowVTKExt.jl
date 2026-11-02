@@ -17,8 +17,8 @@ function WAAMFlow.write_vtk(path::AbstractString, g::CartesianGrid,
                             p::Union{AbstractArray{<:Real,3}, Nothing} = nothing,
                             extra_fields::Dict{String, <:AbstractArray{<:Real,3}} = Dict{String, Array{Float64,3}}())
     # CartesianGrid coordinates define cell vertices along each axis:
-    # g.x: (nx + 1), g.y: (ny + 1), g.z: (nz + 1)
-    vtk = vtk_grid(path, g.x, g.y, g.z)
+    # g.xf: (nx + 1), g.yf: (ny + 1), g.zf: (nz + 1)
+    vtk = vtk_grid(path, g.xf, g.yf, g.zf)
     try
         vtk["PhaseFraction", VTKCellData()] = Float64.(F)
         vtk["Temperature", VTKCellData()] = Float64.(T)
@@ -45,3 +45,4 @@ function WAAMFlow.write_vtk(path::AbstractString, g::CartesianGrid,
 end
 
 end # module
+
