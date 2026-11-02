@@ -340,3 +340,14 @@ end
     @test length(v4) == 5
     @test maximum(abs.(v1 .- v4) ./ max.(abs.(v1), 1.0)) < 1.0e-12
 end
+
+@testset "Coupled track simulation driver" begin
+    cfg = RunConfig(material = "ER70S6", Lx = 0.010, Ly = 0.003, Lz = 0.005,
+                    h_fine = 1.0e-3, h_coarse = 2.0e-3, ny = 4,
+                    travel_speed = 0.005, track_length = 0.002)
+    res = simulate_track(cfg; nsteps = 5, dt = 1e-4)
+    @test res.peak_T > 300.0
+    @test res.time > 0.0
+    @test size(res.T) == (res.grid.nx, res.grid.ny, res.grid.nz)
+    @test size(res.F) == (res.grid.nx, res.grid.ny, res.grid.nz)
+end

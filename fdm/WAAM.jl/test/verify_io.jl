@@ -41,3 +41,12 @@ end
     write_restart(small, U, fill(0.0, 8, 8, 8), fill(0.0, 8, 8, 8), 0.0, 0)
     @test_throws ArgumentError read_restart(small, g)
 end
+
+@testset "VTK Extension interface" begin
+    g = uniform_grid(4, 4, 4, 1.0, 1.0, 1.0)
+    U = VectorField(g)
+    F = fill(0.5, 4, 4, 4)
+    T = fill(300.0, 4, 4, 4)
+    # Without WriteVTK loaded in the standard test depot, write_vtk has no matching method
+    @test_throws MethodError write_vtk("dummy", g, U, F, T)
+end

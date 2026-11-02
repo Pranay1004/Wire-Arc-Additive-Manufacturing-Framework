@@ -52,8 +52,8 @@ export TimestepController, timestep, wall_clock_hint
 export cross_section, bead_geometry, thermal_profile, cooling_rate
 export interpass_temperature, wall_height, effective_thickness, pool_volume
 export RunConfig, SingleTrackResult, run_track
-export FluidWorkspace, step_fluid!
-export write_restart, read_restart
+export FluidWorkspace, step_fluid!, simulate_track
+export write_restart, read_restart, write_vtk
 export MomentumWorkspace, PressureMode, PartialVoid, CSF, gradF, curvature!, smooth_fraction!
 export surface_tension_pressure!, csf_force!, marangoni_faces!, solve_pressure!
 export project_velocity!, darcy_and_buoyancy!, viscous_candidate!, max_speed
@@ -94,5 +94,13 @@ GLMakie this is a bare function and calling it gives a MethodError. Launch with
     julia --project=gui -e 'using GLMakie, WAAMFlow; WAAMFlow.gui()'
 """
 function gui end
+
+"""
+    write_vtk(path, g, U, F, T; t = 0.0, step = 0, p = nothing, extra_fields = Dict())
+
+Export simulation fields to a VTK RectilinearGrid (.vtr) file for 3D inspection in ParaView.
+Requires `WriteVTK` to be imported (`using WriteVTK`).
+"""
+function write_vtk end
 
 end # module

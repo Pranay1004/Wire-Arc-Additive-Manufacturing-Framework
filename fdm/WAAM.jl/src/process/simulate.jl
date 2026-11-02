@@ -93,3 +93,52 @@ function step_fluid!(fw::FluidWorkspace{Tf}, U::VectorField{Tf}, F::Array{Tf,3},
     solve_energy!(fw.e, T, Told, mat, U, fw.src_arc, fw.sh, fw.src_loss, m, g, dt)
     (U, F, T)
 end
+
+"""
+    simulate_track(cfg::RunConfig = RunConfig(); nsteps::Int = 100, dt::Real = 1e-4, ...) -> NamedTuple
+
+Run a multi-step coupled simulation (momentum + VOF + energy) of a moving WAAM arc.
+"""
+function simulate_track(cfg::RunConfig = RunConfig();
+                        nsteps::Int = 100,
+                        dt::Real = 1.0e-4,
+                        surface_tension::Bool = true,
+                        do_compress::Bool = true,
+                        mode::PressureMode = PartialVoid())
+    mat = get_material(cfg.material)
+    proc = ProcessParameters()
+    xf = graded_axis(0.0, cfg.Lx, cfg.h_fine, cfg.h_coarse; h_fine_end = :first)
+    zf = graded_axis(0.0, cfg.Lz, cfg.h_fine, cfg.h_coarse; h_fine_end = :first)
+    yf = collect(range(0.0, cfg.Ly; length = cfg.ny))
+    g = CartesianGrid(xf, yf, zf)
+    m = metrics(g)
+
+    nx, ny, nz = g.nx, g.ny, g.nz
+    fw = FluidWorkspace(g)
+    U = VectorField(g)
+    F = zeros(nx, ny, nz)
+    # Bottom half is initial solid plate
+    F[:, :, 1:max(1, nz ÷ 2)] .= 1.0
+    T = fill(cfg.substrate_T, nx, ny, nz)
+    Told = copy(T)
+
+    x_start = cfg.h_fine * 2
+    x_torch = x_start
+    t = 0.0
+
+    for step in 1:nsteps
+        copyto!(Told, T)
+        torch = (x_torch, yf[1])
+        step_fluid!(fw, U, F, T, Told, mat, m, g, dt;
+                    p = proc, torch = torch, mode = mode,
+                    surface_tension = surface_tension,
+                    do_compress = do_compress)
+        t += dt
+        x_torch += cfg.travel_speed * dt
+        (x_torch - x_start) >= cfg.track_length && break
+    end
+
+    bg = bead_geometry(T, mat, m, g)
+    (U = U, F = F, T = T, grid = g, metrics = m, time = t,
+     peak_T = maximum(T), bead = bg)
+end
