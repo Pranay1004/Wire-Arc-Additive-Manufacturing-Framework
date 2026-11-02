@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  | Case:     uva_pranay
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Ultrasonic Acoustic Radiation Body Force (Eckart Acoustic Streaming)
+// Driven by transducer horn at substrate bottom:
+// Frequency f_us = 20 kHz, Amplitude A_us = 10 um
+// Acoustic Intensity I_ac = 2.238e7 W/m2
+// Net specific radiation acceleration: a_ac = 23.68 m/s2 directed upward (-Y)
+acousticStreamingSource
+{
+    type            vectorSemiImplicitSource;
+    active          true;
+
+    timeStart       0.0;
+    duration        1000.0;
+    selectionMode   all;
+    volumeMode      specific;
+
+    sources
+    {
+        U           ((0 -23.68 0) 0);
+    }
+}
+
+// ************************************************************************* //

@@ -1,0 +1,28 @@
+#!/bin/sh
+# UVA WAAM Melt Pool Case (uva_pranay) - Serial Allrun script
+# Copies initial fields, generates mesh, sets fields, and runs beamWeldFoam
+
+cd "${0%/*}" || exit 1
+
+echo "================================================================="
+echo "   Setting up Ultrasonic-Assisted (UVA) WAAM Case (uva_pranay)   "
+echo "================================================================="
+
+# Copy initial conditions to 0/
+echo "Initializing 0/ directory..."
+rm -rf 0
+cp -r initial 0
+
+# Generate mesh
+echo "Generating mesh with blockMesh..."
+openfoam2412 blockMesh -dict system/blockMeshDict
+
+# Set initial fields (alpha.phase1 in steel substrate)
+echo "Setting initial fields with setFields..."
+openfoam2412 setFields
+
+# Run beamWeldFoam
+echo "Launching beamWeldFoam with Ultrasonic Streaming fvOptions..."
+openfoam2412 beamWeldFoam 2>&1 | tee solver.log
+
+echo "Simulation completed. Output logged to solver.log."

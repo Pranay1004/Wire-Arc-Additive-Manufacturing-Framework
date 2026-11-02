@@ -1,0 +1,103 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// WAAM Arc Welding Case inspired by DEFAULT.edp
+// Substrate thickness: 10mm (HzBase = 10mm)
+// Deposit width: 8mm (TyDep = 8mm)
+// Domain: 30mm x 13mm x 40mm (X x Y x Z)
+// Coordinate frame:
+//   X: Transverse [-15mm, +15mm]
+//   Y: Vertical/depth [0, 13mm] (0-3mm atmosphere, 3-13mm steel substrate)
+//   Z: Travel direction [-20mm, +20mm]
+
+scale 0.001;
+
+vertices
+(
+    (-15  0 -35) // 0
+    ( 15  0 -35) // 1
+    ( 15 13 -35) // 2
+    (-15 13 -35) // 3
+    (-15  0  35) // 4
+    ( 15  0  35) // 5
+    ( 15 13  35) // 6
+    (-15 13  35) // 7
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (24 26 56) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    lowerWall
+    {
+        type wall;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+
+    atmosphere
+    {
+        type patch;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+
+    rightWall
+    {
+        type patch;
+        faces
+        (
+            (1 2 6 5)
+        );
+    }
+
+    leftWall
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+
+    frontAndBack
+    {
+        type patch;
+        faces
+        (
+            (0 3 2 1)
+            (5 6 7 4)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

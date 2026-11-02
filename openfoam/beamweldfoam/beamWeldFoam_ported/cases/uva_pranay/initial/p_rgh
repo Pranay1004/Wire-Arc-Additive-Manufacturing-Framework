@@ -1,0 +1,54 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  | Case:     uva_pranay
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      p_rgh;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform 100000;
+
+boundaryField
+{
+    lowerWall
+    {
+        type            fixedFluxPressure;
+        value           uniform 100000;
+    }
+
+    atmosphere
+    {
+        type            totalPressure;
+        p0              uniform 100000;
+    }
+
+    rightWall
+    {
+        type            fixedFluxPressure;
+        value           uniform 100000;
+    }
+
+    leftWall
+    {
+        type            fixedFluxPressure;
+        value           uniform 100000;
+    }
+
+    frontAndBack
+    {
+        type            fixedFluxPressure;
+        value           uniform 100000;
+    }
+}
+
+// ************************************************************************* //

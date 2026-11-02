@@ -1,0 +1,32 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      decomposeParDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Number of subdomains (configured for Intel Core i9-14900/14th Gen: 20 cores allocated)
+numberOfSubdomains 20;
+
+method          scotch;
+
+// Alternative geometric decomposition if scotch is unavailable:
+// 2 (X) x 2 (Y) x 5 (Z) = 20 subdomains
+hierarchicalCoeffs
+{
+    n           (2 2 5);
+    delta       0.001;
+    order       xyz;
+}
+
+// ************************************************************************* //

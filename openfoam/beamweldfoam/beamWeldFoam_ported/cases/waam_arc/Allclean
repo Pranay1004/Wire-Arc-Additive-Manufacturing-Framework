@@ -1,0 +1,13 @@
+#!/bin/sh
+# WAAM Arc Case - Allclean script
+# Removes all generated files
+
+cd ${0%/*} || exit 1
+
+rm -rf 0
+rm -rf constant/polyMesh
+rm -rf constant/dynamicMeshDict
+rm -rf processor*
+rm -rf log
+rm -rf *.log
+rm -rf [0-9]*

@@ -1,0 +1,6 @@
+[deps]
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+WAAMFlow = "3f7a1c62-9d84-4b5e-a1c7-6e2f8b0d5a31"
+
+[sources]
+WAAMFlow = {path = ".."}

@@ -1,0 +1,62 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+phases (phase1 phase2);
+
+// Phase 1: ER70S-6 mild steel (WAAM wire feedstock)
+phase1
+{
+    transportModel  Newtonian;
+    nu              1.0e-06;        // Kinematic viscosity [m2/s]
+    rho             7850;           // Density [kg/m3] - mild steel
+    cp              500;            // Specific heat [J/(kg.K)]
+    cpsolid         480;            // Solid specific heat [J/(kg.K)]
+    kappa           30.0;           // Liquid thermal conductivity [W/(m.K)]
+    kappasolid      50.0;           // Solid thermal conductivity [W/(m.K)]
+    Tsolidus        1723;           // Solidus temperature [K] (~1450 C)
+    Tliquidus       1798;           // Liquidus temperature [K] (~1525 C)
+    LatentHeat      247000;         // Latent heat of fusion [J/kg]
+    beta            1.2e-5;         // Thermal expansion coefficient [1/K]
+}
+
+// Phase 2: Air (surrounding atmosphere)
+phase2
+{
+    transportModel  Newtonian;
+    nu              1.48e-05;       // Kinematic viscosity [m2/s]
+    rho             0.1;            // Density [kg/m3]
+    cp              500;            // Specific heat [J/(kg.K)]
+    cpsolid         500;            // Solid specific heat [J/(kg.K)]
+    kappa           0.016;          // Thermal conductivity [W/(m.K)]
+    kappasolid      0.016;          // Solid thermal conductivity [W/(m.K)]
+    Tsolidus        1.0;            // Solidus temperature [K]
+    Tliquidus       10.0;           // Liquidus temperature [K]
+    LatentHeat      1;              // Latent heat [J/kg]
+    beta            1.0e-5;         // Thermal expansion coefficient [1/K]
+}
+
+// Surface tension properties (for Marangoni flow)
+sigma            0.8;              // Surface tension [N/m]
+dsigmadT         -0.1e-4;          // Temperature coefficient of surface tension [N/(m.K)]
+
+// Evaporation properties
+p0               100000.0;         // Atmospheric pressure [Pa]
+Tvap             3133.0;           // Vaporization temperature [K] (~2860 C for steel)
+Mm               0.0558;           // Molar mass [kg/mol] (Fe)
+LatentHeatVap    6.09e6;           // Latent heat of vaporization [J/kg]
+
+// ************************************************************************* //

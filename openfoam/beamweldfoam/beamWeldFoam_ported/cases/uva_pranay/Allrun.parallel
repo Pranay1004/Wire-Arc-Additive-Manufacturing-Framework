@@ -1,0 +1,35 @@
+#!/bin/sh
+# UVA WAAM Melt Pool Case (uva_pranay) - 4-Core Parallel Allrun script
+
+cd "${0%/*}" || exit 1
+
+echo "================================================================="
+echo "   Launching Parallel UVA-WAAM Simulation (9 Subdomains)         "
+echo "================================================================="
+
+# Copy initial conditions to 0/
+echo "Initializing 0/ directory..."
+rm -rf 0
+cp -r initial 0
+
+# Generate mesh
+echo "Generating mesh with blockMesh..."
+openfoam2412 blockMesh -dict system/blockMeshDict
+
+# Set initial fields
+echo "Setting fields with setFields..."
+openfoam2412 setFields
+
+# Decompose domain
+echo "Decomposing domain into 9 subdomains..."
+openfoam2412 decomposePar -force
+
+# Run parallel solver
+echo "Running parallel beamWeldFoam across 4 cores..."
+openfoam2412 mpirun -np 9 beamWeldFoam -parallel 2>&1 | tee solver_parallel.log
+
+# Reconstruct parallel subdomains
+echo "Reconstructing mesh and time steps..."
+openfoam2412 reconstructPar
+
+echo "Parallel simulation finished. Reconstructed case ready for ParaView."

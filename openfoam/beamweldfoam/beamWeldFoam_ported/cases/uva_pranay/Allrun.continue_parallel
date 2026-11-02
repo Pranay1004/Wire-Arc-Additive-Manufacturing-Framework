@@ -1,0 +1,9 @@
+#!/bin/sh
+# Continue parallel 9-core beamWeldFoam run to 5.0 s
+cd "${0%/*}" || exit 1
+
+echo "================================================================="
+echo " Continuing Parallel UVA-WAAM Simulation (9 Cores) to 5.0 s      "
+echo "================================================================="
+
+openfoam2412 mpirun -np 9 beamWeldFoam -parallel 2>&1 | tee -a solver_parallel.log

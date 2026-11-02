@@ -1,0 +1,55 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  | Case:     uva_pranay
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+    lowerWall
+    {
+        // Acoustic horn boundary: coupled with fvOptions acoustic radiation force.
+        // Can optionally be toggled to harmonic sinusoidal boundary:
+        //   type         uniformFixedValue;
+        //   uniformValue sine;
+        //   uniformValueCoeffs { frequency 20000; amplitude (0 -1.2566 0); scale (0 1 0); level (0 0 0); }
+        type            noSlip;
+    }
+
+    atmosphere
+    {
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+    }
+
+    rightWall
+    {
+        type            slip;
+    }
+
+    leftWall
+    {
+        type            slip;
+    }
+
+    frontAndBack
+    {
+        type            slip;
+    }
+}
+
+// ************************************************************************* //

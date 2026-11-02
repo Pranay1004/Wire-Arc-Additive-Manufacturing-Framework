@@ -1,0 +1,132 @@
+# Wire-Arc-Additive-Manufacturing-Framework .gitignore
+# ==============================================================================
+# Multi-Physics FEM/CFD WAAM Simulation & Laboratory Tooling Monorepo
+# ==============================================================================
+
+# OS & Environment junk
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.stfolder/
+.stversions/
+*~
+.*~
+.~*
+~$*
+
+# Python caches & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE / Editor configuration
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.commandcode/
+
+# External archives & non-framework documentation directories
+PFM/
+Literature_Survey/
+Literaure_Survey/
+Report/
+project_rules/
+.license/
+
+# Numerical simulation output dumps (regenerated upon run)
+waam_output/
+waam-framework/waam_output/
+waam-moose/waam_output/
+*.log
+*.log.*
+solver_parallel.log
+log.beamWeldFoam
+
+# Mesh outputs & large binaries (User instruction: push only source + .stl)
+*.mesh
+*.msh
+*.e
+*.exo
+*.pvd
+*.vtu
+*.vtp
+*.pvsm
+a_base_sol.e
+waam_moose_in.e
+
+# Large non-essential binary assets (>40MB)
+waam_lab/geometry/j2.stl
+
+# Compiled objects, libraries and MOOSE build artifacts
+*.o
+*.lo
+*.lo.d
+*.d
+.libs/
+waam-moose/waam_moose/waam_moose-opt
+waam-moose/waam_moose/build/
+waam-moose/waam_moose/lib/
+waam-moose/waam_moose/.libs/
+waam-moose/waam_moose/test/lib/
+
+# OpenFOAM transient outputs & build artifacts
+openfoam/**/VTK/
+openfoam/**/postProcessing/
+openfoam/**/processor*/
+openfoam/**/Make/*/
+openfoam/**/*.o
+openfoam/**/*.dep
+openfoam/waamCase/[0-9]*.[0-9]*
+openfoam/waamCase/[1-9]*
+openfoam/waamCase_multi/[0-9]*.[0-9]*
+openfoam/waamCase_multi/[1-9]*
+openfoam/beamweldfoam/beamWeldFoam_ported/cases/waam_arc/[0-9]*.[0-9]*
+openfoam/beamweldfoam/beamWeldFoam_ported/cases/waam_arc/[1-9]*
+
+# OpenFOAM generated polyMesh geometry (regenerated deterministically via blockMesh)
+openfoam/**/constant/polyMesh/points
+openfoam/**/constant/polyMesh/faces
+openfoam/**/constant/polyMesh/owner
+openfoam/**/constant/polyMesh/neighbour
+
+# OpenFOAM cell-centre postprocessing dumps in 0
+openfoam/**/0/C
+openfoam/**/0/Cx
+openfoam/**/0/Cy
+openfoam/**/0/Cz
+
+# Preserved OpenFOAM boundary specifications and initial conditions
+!openfoam/**/constant/polyMesh/boundary
+!openfoam/**/0/
+!openfoam/**/0.orig/
+
+# Privacy & external heavy PDF documentation
+waam_lab/docs/WhatsApp Chat - WAAM/
+waam_lab/docs/*.pdf
+waam-framework/docs/references/*.pdf

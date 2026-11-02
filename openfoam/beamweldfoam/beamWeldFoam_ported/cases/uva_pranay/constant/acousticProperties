@@ -1,0 +1,41 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  | Case:     uva_pranay (Ultrasonic Parameters)
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      acousticProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Transducer & Ultrasonic Vibration Parameters
+enableUltrasound        true;
+
+transducerFrequency     20000.0;          // Transducer frequency f_us [Hz] (20 kHz)
+hornAmplitude           10.0e-06;         // Substrate vibration amplitude A_us [m] (10 um)
+hornVelocityPeak        1.2566;           // Peak vibration velocity v_peak = 2*pi*f*A [m/s]
+
+// Liquid Metal Acoustic Properties (ER70S-6 Mild Steel)
+soundSpeedLiquid        4050.0;           // Acoustic sound speed c_s [m/s]
+liquidDensity           7000.0;           // Liquid density rho_L [kg/m3]
+attenuationCoefficient  15.0;             // Effective attenuation alpha_eff [1/m]
+
+// Cavitation & Streaming Metrics
+acousticIntensity       2.238e+07;        // Acoustic intensity I_ac [W/m2]
+acousticPressureAmp     8.5e+05;          // Acoustic pressure amplitude P_a [Pa] (8.5 bar)
+blakeThreshold          6.89e+05;         // Blake cavitation threshold P_Blake [Pa] (6.89 bar)
+streamingBodyForce      1.658e+05;        // Eckart radiation body force f_ac [N/m3]
+streamingAcceleration   23.68;            // Specific radiation acceleration f_ac/rho [m/s2]
+
+// Coupling Configuration
+hornPatchName           "lowerWall";      // Substrate bottom boundary patch
+wavePropagationVector   (0 -1 0);         // Propagation upward toward melt surface (decreasing Y)
+
+// ************************************************************************* //

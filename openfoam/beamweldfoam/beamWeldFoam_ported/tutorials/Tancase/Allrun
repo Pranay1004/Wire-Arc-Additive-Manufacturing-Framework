@@ -1,0 +1,22 @@
+#!/bin/bash
+cd ${0%/*} || exit 1
+
+LOGFILE="Allrun.log"
+echo "=== Tancase Allrun === | $(date)" | tee $LOGFILE
+
+echo "[1/4] Copying initial to 0" | tee -a $LOGFILE
+cp -r initial 0 2>&1 | tee -a $LOGFILE
+
+echo "[2/4] Running blockMesh" | tee -a $LOGFILE
+blockMesh 2>&1 | tee -a $LOGFILE
+
+echo "[3/4] Running setFields" | tee -a $LOGFILE
+setFields 2>&1 | tee -a $LOGFILE
+
+echo "[4/4] Running beamWeldFoam" | tee -a $LOGFILE
+beamWeldFoam 2>&1 | tee -a $LOGFILE
+
+echo "[5/5] Post-processing with allplot.py" | tee -a $LOGFILE
+python3 allplot.py 2>&1 | tee -a $LOGFILE
+
+echo "=== Done === | $(date)" | tee -a $LOGFILE

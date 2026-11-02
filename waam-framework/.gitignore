@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# macOS / editors
+.DS_Store
+.vscode/
+.agents/
+
+# Simulation artifacts (large, regenerable)
+waam_output/
+waam_output_live/
+*.log
+sim.log
+*.vtu
+*.pvd
+*.vtk
+
+# Scratch outputs (benchmark scripts are kept, artifacts ignored)
+scratch/*.mesh
+scratch/*.png
+scratch/*.gif
+scratch/*.vtu
+scratch/*.csv
+scratch/*.log
+
+# Logs anywhere
+*.log
+
+# Temporary mesh and toolpath outputs in root
+*.sync-conflict-*
+_skipped.*
+toolpath.gcode
+toolpath.txt
+output.gcode
+output.txt
+output.layer_times.txt
+layer_pass_times.txt
+*.mesh.tmp

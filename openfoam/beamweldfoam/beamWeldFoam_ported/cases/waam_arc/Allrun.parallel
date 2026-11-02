@@ -1,0 +1,76 @@
+#!/bin/bash
+# ==============================================================================
+# Allrun.parallel: Multi-Core Parallel Execution Script for WAAM Arc Case
+# Optimized for:
+#   - Intel Core i9-14900 (14th Gen): 20 cores (default)
+#   - Apple M4 Air: 8 cores
+# Usage:
+#   ./Allrun.parallel         # Runs with default 20 cores (i9)
+#   ./Allrun.parallel 20      # Explicit 20 cores
+#   ./Allrun.parallel 8       # 8 cores (e.g. on M4 Air)
+# ==============================================================================
+
+set -e
+cd "${0%/*}" || exit 1
+
+CORES=${1:-20}
+echo "========================================================"
+echo " Starting WAAM Arc Simulation in Parallel on ${CORES} Cores"
+echo " Host: $(hostname)"
+echo " CPU Threads: $(sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 24)"
+echo " Memory: $(sysctl -n hw.memsize 2>/dev/null | awk '{print $1/1024/1024/1024 \" GB\"}' || free -h 2>/dev/null | awk '/Mem:/ {print $2}' || echo '128 GB')"
+echo "========================================================"
+
+# Detect and source OpenFOAM environment if not already loaded
+if [ -z "$WM_PROJECT_DIR" ]; then
+    if [ -f "/opt/homebrew/bin/openfoam2412" ]; then
+        . /opt/homebrew/bin/openfoam2412
+    elif [ -f "/usr/lib/openfoam/openfoam2412/etc/bashrc" ]; then
+        source /usr/lib/openfoam/openfoam2412/etc/bashrc
+    elif [ -f "/opt/openfoam2412/etc/bashrc" ]; then
+        source /opt/openfoam2412/etc/bashrc
+    elif [ -f "$HOME/OpenFOAM/OpenFOAM-2412/etc/bashrc" ]; then
+        source "$HOME/OpenFOAM/OpenFOAM-2412/etc/bashrc"
+    else
+        echo "Note: Assuming OpenFOAM environment is already sourced or managed by container."
+    fi
+fi
+
+# 1. Initialize initial conditions if 0/ does not exist
+if [ ! -d "0" ]; then
+    echo "[1/5] Initializing 0/ directory from initial/..."
+    cp -r initial 0
+fi
+
+# 2. Check and generate mesh
+if [ ! -f "constant/polyMesh/points" ]; then
+    echo "[2/5] Running blockMesh..."
+    blockMesh
+    echo "Setting initial phase field..."
+    setFields
+else
+    echo "[2/5] Mesh already present."
+fi
+
+# 3. Update numberOfSubdomains in decomposeParDict
+echo "[3/5] Configuring system/decomposeParDict for ${CORES} subdomains..."
+sed -i.bak -E "s/numberOfSubdomains[[:space:]]+[0-9]+;/numberOfSubdomains ${CORES};/" system/decomposeParDict
+rm -f system/decomposeParDict.bak
+
+# 4. Decompose the domain
+echo "[4/5] Decomposing domain into ${CORES} subdomains (Scotch graph partitioner)..."
+rm -rf processor*
+decomposePar -force > log.decomposePar 2>&1
+
+# 5. Run beamWeldFoam in parallel
+echo "[5/5] Launching beamWeldFoam in parallel with mpirun -np ${CORES}..."
+echo "Solver logs are streaming to solver.log..."
+mpirun -np "${CORES}" beamWeldFoam -parallel 2>&1 | tee solver.log
+
+echo "========================================================"
+echo " Parallel Run Finished!"
+echo " Reconstructing latest solution time for ParaView..."
+reconstructPar -latestTime > log.reconstructPar 2>&1
+touch waam_arc.foam
+echo " Open waam_arc.foam in ParaView to inspect results."
+echo "========================================================"

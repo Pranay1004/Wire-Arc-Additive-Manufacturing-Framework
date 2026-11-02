@@ -1,0 +1,166 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  2412
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "alpha.phase1.*"
+    {
+        nAlphaCorr      3;
+        nAlphaSubCycles 3;
+        cAlpha          1.0;
+        scAlpha         0.5;
+
+        MULESCorr       yes;
+        nLimiterIter    5;
+
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-9;
+        relTol          0;
+    }
+
+    p_rgh
+    {
+        solver          GAMG;
+        tolerance       1e-9;
+        relTol          0.0;
+        minIter         1;
+        smoother        GaussSeidel;
+        nPreSweeps      2;
+        nPostSweeps     3;
+        nFinestSweeps   2;
+        cacheAgglomeration on;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+
+    p_rghFinal
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            tolerance       1e-9;
+            relTol          0;
+            nVcycles        5;
+            smoother        GaussSeidel;
+            nPreSweeps      2;
+            nPostSweeps     3;
+            nFinestSweeps   2;
+            cacheAgglomeration on;
+            nCellsInCoarsestLevel 10;
+            agglomerator    faceAreaPair;
+            mergeLevels     1;
+        }
+        tolerance       1e-9;
+        relTol          0;
+        minIter         1;
+        maxIter         25;
+    }
+
+    "pcorr.*"
+    {
+        solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            tolerance       1e-9;
+            relTol          0;
+            smoother        GaussSeidel;
+        }
+        tolerance       1e-9;
+        relTol          0;
+        maxIter         100;
+    }
+
+    U
+    {
+        solver          smoothSolver;
+        smoother        GaussSeidel;
+        tolerance       1e-9;
+        relTol          0.0;
+        nSweeps         5;
+    }
+
+    UFinal
+    {
+        $U;
+        tolerance       1e-9;
+        relTol          0;
+    }
+
+    Temperature
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-9;
+        relTol          0.0;
+    }
+
+    TemperatureFinal
+    {
+        $Temperature;
+    }
+}
+
+PIMPLE
+{
+    nOuterCorrectors 1;
+    nCorrectors     3;
+    nNonOrthogonalCorrectors 0;
+    pRefCell        0.0;
+    pRefValue       0.0;
+}
+
+MELTING
+{
+    minTempCorrector 1;
+    maxTempCorrector 150;
+    epsilonTolerance 1e-6;
+    epsilonRelaxation 0.95;
+
+    // WAAM Arc Heat Source Parameters derived from DEFAULT.edp:
+    // Pweld = Iweld * Uweld * etaArc = 200A * 24V * 0.8 = 3840 W
+    // vscan = 10 mm/s = 0.010 m/s
+    // Bead width = 8 mm, Goldak semi-axes bG = 7mm, af = 8mm -> HS_a = 0.0035 m
+    HS_a            0.0035;       // Arc heat source radius [m]
+    HS_bg           0.0;          // Beam gaussian offset [m] (centred at x=0)
+    HS_velocity     0.010;        // Arc travel velocity [m/s] (along +z)
+    HS_lg           -0.025;       // Start position at z=-25mm for 50mm 5s travel
+    HS_Q            850.0;        // Calibrated surface arc power [W] (matches DEFAULT.edp T_peak=2200-2400K)
+
+    HS_deposition_cutoff 0.5;
+
+    Oscillation_Amplitude   0.0;
+    Oscillation_Frequency   0.0;
+
+    Y_R             0.15;         // Focusing parameter
+    focY            0.003;        // Focal Y position [m] (substrate surface at y=3mm)
+    foc_shift_vel   0.0;          // Focal shift velocity [m/s]
+    Q_ramp_rate     0.0;          // Constant sustained power
+    tshift          1.0;          // Ramp time threshold [s]
+
+    damperSwitch    true;
+}
+
+relaxationFactors
+{
+    "U.*"           0.82;
+}
+
+// ************************************************************************* //

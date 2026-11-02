@@ -1,0 +1,12 @@
+[
+  {
+    "mode": "egl_offscreen",
+    "ok": true,
+    "first_frame_s": 1.1911615000026359
+  },
+  {
+    "mode": "osmesa",
+    "ok": true,
+    "first_frame_s": 0.7613775830031955
+  }
+]

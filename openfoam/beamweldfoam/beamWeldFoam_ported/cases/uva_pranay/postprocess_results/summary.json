@@ -1,0 +1,18 @@
+{
+  "simulation_time_range_s": [
+    1.049979e-07,
+    0.02
+  ],
+  "total_timesteps": 1088,
+  "courant_max_peak": 6.6435309e-07,
+  "courant_max_mean": 1.0379827209971205e-07,
+  "alpha_vol_frac_final": 0.76923077,
+  "temp_residual_initial_first": 0.99999999,
+  "temp_residual_initial_last": 0.0001976429,
+  "temp_residual_final_last": 7.6722618e-11,
+  "wall_clock_s": 140.63,
+  "dt_range_s": [
+    1.049979e-07,
+    2e-05
+  ]
+}

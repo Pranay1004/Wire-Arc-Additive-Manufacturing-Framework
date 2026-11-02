@@ -1,0 +1,16 @@
+#!/bin/sh
+# Allclean script for uva_pranay case
+
+cd "${0%/*}" || exit 1
+
+echo "Cleaning UVA-WAAM case directory..."
+
+rm -rf 0
+rm -rf [0-9]*.*[0-9]*
+rm -rf processor*
+rm -rf constant/polyMesh
+rm -rf dynamicCode
+rm -f solver.log solver_parallel.log log.*
+rm -f *.foam *.png *.csv *.json
+
+echo "Case cleaned."
